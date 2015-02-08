@@ -52,6 +52,9 @@ end
 def alert_bottle_quantity(customer)
 
   p "You purchased #{customer.pop_purchased} bottles of pop."
+  p "If recycled, this will generate #{customer.redeem_free_pop} free bottles of pop, #{customer.return_on_caps} from caps, and #{customer.return_on_bottles} from bottles."
+
+  prompt_for_input
 
 end
 
@@ -59,7 +62,7 @@ end
 
 
 
-prompt
+prompt_for_input
 
 
 
