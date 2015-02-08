@@ -31,24 +31,31 @@ end
 
 def prompt
   p "How much would you like to spend?"
-  response
+  collect_response
 end
 
 
 
-def response
-  response = gets.chomp.to_i
-  new_customer(response)
+def collect_response
+  user_response = gets.chomp.to_i
+  create_customer(user_response)
 end
 
 
 
-def new_customer(response)
+def create_customer(investment)
+  @customer1 = Recycling.new(investment)
+  alert_bottle_quantity(@customer1)
+end
 
-@customer1 = Recycling.new(response)
 
+def alert_bottle_quantity(customer)
+
+  p "You purchased #{customer.pop_purchased} bottles of pop."
 
 end
+
+
 
 
 
