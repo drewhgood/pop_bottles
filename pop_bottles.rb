@@ -29,8 +29,30 @@ class Recycling
 
 end
 
+def prompt
+  p "How much would you like to spend?"
+  response
+end
 
-customer1 = Recycling.new(8)
 
-p customer1.redeem_free_pop
+
+def response
+  response = gets.chomp.to_i
+  new_customer(response)
+end
+
+
+
+def new_customer(response)
+
+@customer1 = Recycling.new(response)
+
+
+end
+
+
+
+prompt
+
+
 
