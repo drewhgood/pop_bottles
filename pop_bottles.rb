@@ -1,11 +1,13 @@
 
+
 class Recycling
 
-  attr_reader :investment
+  attr_reader :investment,  :caps
   
 
-  def initialize(investment)
+  def initialize(investment, caps)
     @investment = investment
+    @caps = caps
   end
 
 
@@ -29,16 +31,32 @@ class Recycling
 
 end
 
-def prompt
-  p "How much would you like to spend?"
-  collect_response
+def prompt_for_input(question_number = 0)
+
+  questions = ["How much would you like to spend?","How many caps do you have?", "How many bottles do you have?"]
+  p questions[question_number]
+  nxt_question = question_number + 1
+  collect_response(nxt_question)
 end
 
 
 
-def collect_response
-  user_response = gets.chomp.to_i
+def collect_response(nxt_question)
+  
+  user_response = gets.chomp
+  responses << user_response
+  p responses.length
+
+  if responses.length < 2
+
+  prompt_for_input(nxt_question)
+
+  else
+
   create_customer(user_response)
+    
+  end
+  
 end
 
 
@@ -58,10 +76,7 @@ def alert_bottle_quantity(customer)
 
 end
 
-
-
-
-
 prompt_for_input
+
 
 
