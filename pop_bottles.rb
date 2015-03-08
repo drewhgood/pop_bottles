@@ -15,7 +15,7 @@ end
 def redeem_with_caps
   new_bottles = @current_caps / 4
   @current_bottles += new_bottles
-  puts "#{new_bottles} free bottle from caps."
+  puts "#{new_bottles} free bottle(s) from caps."
 end
 
 
@@ -26,14 +26,31 @@ def update_caps_count
 end
 
 
+def redeem_with_bottles
+  new_bottles = @current_bottles/ 2
+  @current_bottles += new_bottles
+  puts "#{new_bottles} free bottle(s) from bottles."
+end
+
+
+def update_bottles_count
+   remainder = @current_bottles % 2
+   @current_bottles = remainder
+   puts "#{@current_bottles} bottle(s) remaining."
+end
+
+
 
 def recycle
   happy = true
-  initial_purchase(10)
+  initial_purchase(2)
   while happy
   
     redeem_with_caps
     update_caps_count
+
+    redeem_with_bottles
+    update_bottles_count
 
   happy = false
   end
