@@ -1,151 +1,79 @@
+require 'colorize'
+
+@total_free_bottles = 0
 @current_bottles = 0
 @current_caps = 0
-
-
-
+@bottle_redemption_ratio = 2
+@cap_redemption_ratio = 4
 
 def initial_purchase(investment)
-   @current_bottles = investment / 2
+   @current_bottles = investment / @bottle_redemption_ratio
    @current_caps = @current_bottles
-   puts "#{@current_bottles} bottle(s) were purchased with an investment of $#{investment}."
+   puts "#{@current_bottles} bottle(s) were purchased with an investment of $#{investment}.".colorize(:magenta)
 end
-
-
-
-def redeem_with_caps
-  new_bottles = @current_caps / 4
-  @current_bottles += new_bottles
-  puts "#{new_bottles} free bottle(s) from caps."
-end
-
-
-def update_caps_count
-   remainder = @current_caps % 4
-   @current_caps = remainder
-   puts "#{@current_caps} cap(s) remaining."
-end
-
 
 def redeem_with_bottles
-  new_bottles = @current_bottles/ 2
-  @current_bottles += new_bottles
-  puts "#{new_bottles} free bottle(s) from bottles."
+  free_bottles = @current_bottles / @bottle_redemption_ratio
+  remaining_bottles = @current_bottles % @bottle_redemption_ratio 
+
+  update_current_bottles(free_bottles, true, remaining_bottles)
+  announce_redemption(free_bottles,'bottles')
+  update_current_caps(free_bottles, false)
+  update_total_free_bottles(free_bottles)
 end
 
-
-def update_bottles_count
-   remainder = @current_bottles % 2
-   @current_bottles = remainder
-   puts "#{@current_bottles} bottle(s) remaining."
+def announce_redemption(free_bottles, redemption_type)
+  if redemption_type == 'bottles'
+    puts "You recieved #{free_bottles} free bottle(s) from returned #{redemption_type}.".colorize(:blue)
+  else
+    puts "You recieved #{free_bottles} free bottle(s) from returned #{redemption_type}.".colorize(:red)
+  end
 end
 
+def update_current_bottles(free_bottles, redemption, unredeemed_bottles = 0)
+  if redemption
+    @current_bottles = (free_bottles + unredeemed_bottles)
+  else
+    @current_bottles += free_bottles
+  end
+end
 
+def update_current_caps(free_bottles, redemption, unredeemed_caps = 0)
+  if redemption
+    @current_caps = (free_bottles + unredeemed_caps)
+  else
+    @current_caps += free_bottles
+  end
+end
+
+def redeem_with_caps
+  free_bottles = @current_caps / @cap_redemption_ratio
+  remaining_caps = @current_caps % @cap_redemption_ratio
+
+  announce_redemption(free_bottles,'caps')
+  update_current_bottles(free_bottles, false)
+  update_current_caps(free_bottles, true, remaining_caps)
+  update_total_free_bottles(free_bottles)
+end
+
+def update_total_free_bottles(free_bottles)
+  @total_free_bottles += free_bottles
+end
+
+def alert_quantities
+  puts "You have #{@current_bottles} bottle(s) & #{@current_caps} cap(s)."
+  puts "You have earned a total of #{@total_free_bottles} free bottles.".colorize(:green)
+end
 
 def recycle
-  happy = true
-  initial_purchase(2)
-  while happy
-  
-    redeem_with_caps
-    update_caps_count
-
+  initial_purchase(100)
+  puts"#########################################################"
+  while @current_bottles >= @bottle_redemption_ratio || @current_caps >= @cap_redemption_ratio
     redeem_with_bottles
-    update_bottles_count
-
-  happy = false
+    redeem_with_caps
+    alert_quantities
+    puts"#########################################################"
   end
-
 end
 
-
 recycle
-
-
-
-
-
-
-
-
-
-
-# class Recycling
-
-#   attr_reader :investment,  :caps
-  
-
-#   def initialize(investment, caps)
-#     @investment = investment
-#     @caps = caps
-#   end
-
-
-#   def pop_purchased
-#     @investment / 2
-#   end
-
-#   def return_on_caps
-#     pop_purchased / 4
-#   end
-
-#   def return_on_bottles
-#     pop_purchased / 2
-#   end
-
-#   def redeem_free_pop
-#     return_on_bottles + return_on_caps
-#   end
-
-
-
-# end
-
-# def prompt_for_input(question_number = 0)
-
-#   questions = ["How much would you like to spend?","How many caps do you have?", "How many bottles do you have?"]
-#   p questions[question_number]
-#   nxt_question = question_number + 1
-#   collect_response(nxt_question)
-# end
-
-
-
-# def collect_response(nxt_question)
-  
-#   user_response = gets.chomp
-#   responses << user_response
-#   p responses.length
-
-#   if responses.length < 2
-
-#   prompt_for_input(nxt_question)
-
-#   else
-
-#   create_customer(user_response)
-    
-#   end
-  
-# end
-
-
-
-# def create_customer(investment)
-#   @customer1 = Recycling.new(investment)
-#   alert_bottle_quantity(@customer1)
-# end
-
-
-# def alert_bottle_quantity(customer)
-
-#   p "You purchased #{customer.pop_purchased} bottles of pop."
-#   p "If recycled, this will generate #{customer.redeem_free_pop} free bottles of pop, #{customer.return_on_caps} from caps, and #{customer.return_on_bottles} from bottles."
-
-#   prompt_for_input
-
-# end
-
-# prompt_for_input
-
-
-
