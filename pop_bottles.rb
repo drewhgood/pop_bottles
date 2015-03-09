@@ -17,10 +17,7 @@ def redeem_with_bottles
   not_returned_bottles = @current_bottles % @bottle_redemption_ratio
   returned_bottles = @current_bottles - not_returned_bottles 
 
-  announce_redemption(free_bottles,'bottles')
-  update_current_bottles(free_bottles, returned_bottles)
-  update_current_caps(free_bottles)
-  update_total_free_bottles(free_bottles)
+  update_all_quantities('bottles', free_bottles, returned_bottles)
 end
 
 def redeem_with_caps
@@ -28,8 +25,12 @@ def redeem_with_caps
   not_returned_caps = @current_caps % @cap_redemption_ratio
   returned_caps = @current_caps - not_returned_caps
 
-  announce_redemption(free_bottles,'caps')
-  update_current_bottles(free_bottles)
+  update_all_quantities('caps',free_bottles, 0, returned_caps)
+end
+
+def update_all_quantities(redemption_type, free_bottles, returned_bottles = 0, returned_caps = 0)
+  announce_redemption(free_bottles, redemption_type)
+  update_current_bottles(free_bottles, returned_bottles)
   update_current_caps(free_bottles, returned_caps)
   update_total_free_bottles(free_bottles)
 end
