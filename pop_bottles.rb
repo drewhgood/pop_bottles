@@ -9,7 +9,10 @@ require 'colorize'
 def initial_purchase(investment)
    @current_bottles = investment / @bottle_redemption_ratio
    @current_caps = @current_bottles
-   puts "#{@current_bottles} bottle(s) were purchased with an investment of $#{investment}.".colorize(:magenta)
+end
+
+def announce_initial_purchase(investment_amount)
+   puts "#{@current_bottles} bottle(s) were purchased with an investment of $#{investment_amount}.".colorize(:magenta)
 end
 
 def redeem_with_bottles
@@ -17,7 +20,7 @@ def redeem_with_bottles
   not_returned_bottles = @current_bottles % @bottle_redemption_ratio
   returned_bottles = @current_bottles - not_returned_bottles 
 
-  update_all_quantities('bottles', free_bottles, returned_bottles)
+  update_all_quantities('bottles', free_bottles, returned_bottles, 0)
 end
 
 def redeem_with_caps
@@ -77,8 +80,9 @@ def recycle
   investing = true
   while investing
     prompt_for_investment
-    investment = collect_response.to_i
-    initial_purchase(investment)
+    investment_amount = collect_response.to_i
+    initial_purchase(investment_amount)
+    announce_initial_purchase(investment_amount)
     divider
    
     while @current_bottles >= @bottle_redemption_ratio || @current_caps >= @cap_redemption_ratio
