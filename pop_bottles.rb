@@ -14,46 +14,37 @@ end
 
 def redeem_with_bottles
   free_bottles = @current_bottles / @bottle_redemption_ratio
-  remaining_bottles = @current_bottles % @bottle_redemption_ratio 
+  not_returned_bottles = @current_bottles % @bottle_redemption_ratio
+  returned_bottles = @current_bottles - not_returned_bottles 
 
-  update_current_bottles(free_bottles, true, remaining_bottles)
   announce_redemption(free_bottles,'bottles')
-  update_current_caps(free_bottles, false)
+  update_current_bottles(free_bottles, returned_bottles)
+  update_current_caps(free_bottles)
   update_total_free_bottles(free_bottles)
-end
-
-def announce_redemption(free_bottles, redemption_type)
-  if redemption_type == 'bottles'
-    puts "You recieved #{free_bottles} free bottle(s) from returned #{redemption_type}.".colorize(:blue)
-  else
-    puts "You recieved #{free_bottles} free bottle(s) from returned #{redemption_type}.".colorize(:red)
-  end
-end
-
-def update_current_bottles(free_bottles, redemption, unredeemed_bottles = 0)
-  if redemption
-    @current_bottles = (free_bottles + unredeemed_bottles)
-  else
-    @current_bottles += free_bottles
-  end
-end
-
-def update_current_caps(free_bottles, redemption, unredeemed_caps = 0)
-  if redemption
-    @current_caps = (free_bottles + unredeemed_caps)
-  else
-    @current_caps += free_bottles
-  end
 end
 
 def redeem_with_caps
   free_bottles = @current_caps / @cap_redemption_ratio
-  remaining_caps = @current_caps % @cap_redemption_ratio
+  not_returned_caps = @current_caps % @cap_redemption_ratio
+  returned_caps = @current_caps - not_returned_caps
 
   announce_redemption(free_bottles,'caps')
-  update_current_bottles(free_bottles, false)
-  update_current_caps(free_bottles, true, remaining_caps)
+  update_current_bottles(free_bottles)
+  update_current_caps(free_bottles, returned_caps)
   update_total_free_bottles(free_bottles)
+end
+
+def announce_redemption(free_bottles, redemption_type)
+  redemption_type == 'bottles' ? color = 'blue' : color = 'red'
+  puts "You recieved #{free_bottles} free bottle(s) from returned #{redemption_type}.".colorize(color.to_sym)
+end
+
+def update_current_bottles(free_bottles, returned_bottles = 0)
+    @current_bottles += (free_bottles - returned_bottles)
+end
+
+def update_current_caps(free_bottles, returned_caps = 0)
+    @current_caps += (free_bottles - returned_caps)
 end
 
 def update_total_free_bottles(free_bottles)
@@ -77,19 +68,23 @@ def collect_response
   gets.chomp
 end
 
+def divider
+    puts"#########################################################"
+end
+
 def recycle
   investing = true
   while investing
     prompt_for_investment
     investment = collect_response.to_i
     initial_purchase(investment)
-    puts"#########################################################"
+    divider
    
     while @current_bottles >= @bottle_redemption_ratio || @current_caps >= @cap_redemption_ratio
       redeem_with_bottles
       redeem_with_caps
       alert_quantities
-      puts"#########################################################"
+      divider    
     end
 
     prompt_to_invest_again
