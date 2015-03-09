@@ -65,14 +65,39 @@ def alert_quantities
   puts "You have earned a total of #{@total_free_bottles} free bottles.".colorize(:green)
 end
 
+def prompt_for_investment
+  p "How much would you like to spend?"
+end
+
+def prompt_to_invest_again
+  p "Would you like to run another calculation? (Y/N)"
+end
+
+def collect_response
+  gets.chomp
+end
+
 def recycle
-  initial_purchase(100)
-  puts"#########################################################"
-  while @current_bottles >= @bottle_redemption_ratio || @current_caps >= @cap_redemption_ratio
-    redeem_with_bottles
-    redeem_with_caps
-    alert_quantities
+  investing = true
+  while investing
+    prompt_for_investment
+    investment = collect_response.to_i
+    initial_purchase(investment)
     puts"#########################################################"
+   
+    while @current_bottles >= @bottle_redemption_ratio || @current_caps >= @cap_redemption_ratio
+      redeem_with_bottles
+      redeem_with_caps
+      alert_quantities
+      puts"#########################################################"
+    end
+
+    prompt_to_invest_again
+    unless collect_response.downcase == "y"
+      investing = false
+      puts "Thank you for using our recycling program!".colorize(:yellow)
+    end
+
   end
 end
 
